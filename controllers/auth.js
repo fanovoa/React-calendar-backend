@@ -1,17 +1,41 @@
 const {response, request } = require('express');
 const { validationResult } = require('express-validator');
+const Usuario = require('../models/Usuario');
 
-const crearUsuario = (req= request  , res = response ) =>{
+const crearUsuario = async (req= request  , res = response ) =>{
     
-    const { name, email, password } =req.body;
+    const { email, password } =req.body;
 
-    res.status(201).json({
-        ok:true,
-        msg:'registro',
-        name,
-        email,
-        password
-    });
+
+    try {
+
+        let usuario = await Usuario.findOne( {email} );
+        if( usuario){
+
+            return res.status(400).json({
+                ok:false,
+                msn:`ya existe un usuario con el correo ${email}`
+            })
+        }
+        
+        usuario = new Usuario( req.body );
+        await usuario.save();
+
+        res.status(201).json({
+            ok:true,
+            uid: usuario.id,
+            name: usuario.name,
+            msg: 'se ha creado un nuevo usuario'
+        });
+
+    } catch (error) {
+        console.log( error )
+        res.status(500).json({
+            ok:false,
+            msg:'Por favor hable con el administrador'
+        });
+    }
+    
 
 }
 
