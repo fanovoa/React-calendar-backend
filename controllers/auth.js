@@ -102,11 +102,19 @@ const loginUsuario = async(req= request  , res = response ) =>{
 
 }
 
-const revalidarToken = (req = request  , res = response ) =>{
+const revalidarToken = async(req = request  , res = response ) =>{
+
+    const {uid , name } = req;
+
+    //Generar un nuevo JWT
+
+        const token = await generarJWT(uid, name); 
+
     	
     res.json({
         ok:true,
-        msg:'renew'
+        token,    
+        msg:'Token revalidado'
     });
 
 }
