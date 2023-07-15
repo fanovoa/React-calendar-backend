@@ -27,6 +27,8 @@ const EventoSchema = Schema({
 
 });
 
+//Modificar el toJson cuando este se llama para que no serialice _id sino id
+
 EventoSchema.method('toJSON', function (){
     const {__v , _id, ...object } = this.toObject();
     object.id=_id;
