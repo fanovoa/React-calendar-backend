@@ -12,16 +12,23 @@ const router = Router();
 
 
 const { getEventos, crearEvento, actualizarEvento, eliminarEvento } = require('../controllers/events');
+const { isDate } = require('../helpers/isDate');
 
 //Todos tienen que pasar por la validación del JWT
 router.use( validarJWT );
 
 
 // Obtener eventos
-router.get('/'  , getEventos );
+router.get('/' , [], getEventos );
 
 // Crear un nuevo evento
-router.post('/' , crearEvento );
+router.post('/' ,[
+    check('title','El titulo es obligatorio').not().isEmpty(),
+    check('start','La fecha de inicio es obligatorio').custom(isDate),
+    check('end','La fecha de finalización es obligatorio').custom(isDate),
+
+    validarCampos
+], crearEvento );
 
 // Actualizar un nuevo evento
 router.put('/:id' , actualizarEvento );
